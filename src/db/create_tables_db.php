@@ -1,6 +1,6 @@
 <?php
 
-$db = new SQLite3('user_chats_db.db');
+$db = new SQLite3('../../user_chats_db.db');
 
 $db->exec("CREATE TABLE IF NOT EXISTS chats( 
     chat_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -10,7 +10,7 @@ $db->exec("CREATE TABLE IF NOT EXISTS chats(
     status INT NOT NULL,
     timestamps TEXT NOT NULL )");
 
-
+# status: 0 sent; 1 received by server; 2 received by recipient
 
 $db->exec("CREATE TABLE IF NOT EXISTS user( 
     user_id TEXT PRIMARY KEY,

@@ -5,7 +5,7 @@ use Slim\Factory\AppFactory;
 use Slim\Psr7\Response;
 
 require __DIR__ . '/./vendor/autoload.php';
-include 'SQLite_connection.php';
+include 'src/SQLite_connection.php';
 
 $app = AppFactory::create();
 
@@ -17,19 +17,18 @@ $app->get('/', function (Request $request, Response $response, $args) {
 
 
 $app->post('/api', function ($request, $response, $args) {
-    $data = $request->getQueryParams();
+    $data = (array)$request->getParsedBody();
 
     $sender = $data['sender'];
     $recipient = $data['recipient'];
     $msg = $data['msg'];
     $status = intval($data['status']);
     $timestamps = strval(time());
+    error_log(print_r($sender, true));
 
     insert_msg($sender, $recipient, $msg, $status, $timestamps);
 
-    $data2 = array('name' => 'Rob', 'mmmassage' => '`1111111');
-
-    $payload = json_encode($data2);
+    $payload = json_encode($data);
 
     $response->getBody()->write($payload);
     return $response
@@ -38,14 +37,64 @@ $app->post('/api', function ($request, $response, $args) {
 
 });
 
+$app->post('/api/fetch', function ($request, $response, $args) {
+    $data = (array)$request->getParsedBody();
+    $recipient = $data['recipient'];
+    $ret = get_msg($recipient);
+    $payload = json_encode($ret);
 
+    $response->getBody()->write($payload);
+    return $response
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(201);
+});
 
 
 $app->run();
 
+function get_msg($recipient){
+    $db = new MyDB();
+    $sql = $db->prepare('SELECT online_status FROM user WHERE user_id=?');
+    $sql->bindParam(1, $recipient);
+    $online_status = 0;
+    if($db){
+        $ret = $sql->execute();
+        if(!$ret) {
+            error_log(print_r($db->lastErrorMsg(), true));
+
+        } else {
+            $online_status = $ret->fetchArray(SQLITE3_ASSOC)['online_status'];
+            error_log(print_r($online_status, true));
+        }
+
+    }
+    if($online_status != 1){
+        return 0;
+    }
+    $sql_msg = $db->prepare('SELECT sender_id, chat, status, timestamps FROM chats WHERE recipient_id=?');
+    $sql_msg->bindParam(1, $recipient);
+    $data = array();
+    if($db){
+        $ret = $sql_msg->execute();
+        if(!$ret) {
+            error_log(print_r($db->lastErrorMsg(), true));
+
+        } else {
+            while($res= $ret->fetchArray(SQLITE3_ASSOC)){
+                array_push($data, $res);
+            }
+            error_log(print_r($data, true));
+            $status = $data['chat'];
+        }
+
+    }
+
+    return json_encode($data);
+}
+
 function insert_msg($sender, $recipient, $msg, $status, $timestamps) {
-    if($status == 1){
-        $status = 2;
+    if($status == 0){
+        $status = 1;
     }
 
     $db = new MyDB();
@@ -71,7 +120,7 @@ function insert_msg($sender, $recipient, $msg, $status, $timestamps) {
         $ret = $sql->execute();
         if(!$ret) {
             error_log(print_r($db->lastErrorMsg(), true));
-            $status = 1;
+            $status = 0;
         } else {
             echo "chat added successfully\n";
         }
