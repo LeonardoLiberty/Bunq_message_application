@@ -20,7 +20,16 @@ include "src/session.php";
 
 <body>
 
-<p>updated</p>
+<div id="container">
+    <h1 id="um">unread messages</h1>
+    <div class="unread">
+
+    </div>
+    <h1 id="hm">historical messages</h1>
+    <div class="history">
+
+    </div>
+</div>
 </body>
 
 <script type="text/javascript">
@@ -44,19 +53,50 @@ include "src/session.php";
     });
 
     function fetch(){
-
         $.ajax({
             url: "/api/fetch",
             type: 'POST',
             data: {recipient: getCookie('name')},
             dataType: 'json',
-
             success: function(res) {
-                console.log(res);
-                
+                let data = JSON.parse(res);
+                let chat_ids = $("#container").children().children().map((i, div) => div.id).get();
+                chat_ids = chat_ids.map(x => parseInt(x));
+                let read_chat = [];
+                for (let i=0; i<data.length; i++){
+                    if(!chat_ids.includes(data[i]['chat_id'])){
+                        if(data[i]['status'] === 1){
+                            $(".unread").append("<div id="+ data[i]['chat_id']+">"+
+                                "<p>"+ "sender id: " + data[i]['sender_id'] +"</p>"+
+                                "<p>"+ "content: "+ data[i]['chat'] +"</p>"+
+                                "<p>"+ "time: " + unix_timestamps_js(data[i]['timestamps']) +"</p>"+
+                                "<p>----------------------------------------------------</p>"+
+                                "</div>");
+
+                            read_chat.push(data[i]['chat_id']);
+                        }else{
+                            $(".history").append("<div id="+ data[i]['chat_id']+">"+
+                                "<p>"+ "sender id: " + data[i]['sender_id'] +"</p>"+
+                                "<p>"+ "content: "+ data[i]['chat'] +"</p>"+
+                                "<p>"+ "time: " + unix_timestamps_js(data[i]['timestamps']) +"</p>"+
+                                "<p>----------------------------------------------------</p>"+
+                                "</div>");
+                        }
+                    }
+                }
+
+                $.ajax({
+                    url: "/api/read_msg",
+                    type: 'POST',
+                    data: {chat_id: read_chat},
+                    dataType: 'json',
+
+                    success: function(res) {
+                        console.log(res);
+                    }
+                });
 
             },
-
             error: function(err) {
                 console.log(err.responseText);
                 console.log('err');

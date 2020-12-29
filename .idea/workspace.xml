@@ -2,14 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f95e6bab-dc8f-42fc-8b10-6272e8664486" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/action.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/session.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SQLite_connection.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLite_connection.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_tables_db.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/create_tables_db.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/home.php" beforeDir="false" afterPath="$PROJECT_DIR$/send_msg.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/u1_check_msg.php" beforeDir="false" afterPath="$PROJECT_DIR$/u1_recieve_msg.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/action.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/action.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/u1_recieve_msg.php" beforeDir="false" afterPath="$PROJECT_DIR$/u1_recieve_msg.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user_chats_db.db" beforeDir="false" afterPath="$PROJECT_DIR$/user_chats_db.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -66,6 +62,15 @@
     <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

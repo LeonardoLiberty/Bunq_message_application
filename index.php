@@ -49,8 +49,41 @@ $app->post('/api/fetch', function ($request, $response, $args) {
         ->withStatus(201);
 });
 
+$app->post('/api/read_msg', function ($request, $response, $args) {
+    $data = (array)$request->getParsedBody();
+    $chat_id = $data['chat_id'];
+    error_log(print_r($chat_id, true));
+    read_msg($chat_id);
+    $payload = json_encode($chat_id);
+    $response->getBody()->write($payload);
+    return $response
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(201);
+});
+
 
 $app->run();
+
+function read_msg($chat_id){
+    if(!$chat_id){
+        return;
+    }
+    $db = new MyDB();
+    for($i = 0; $i<count($chat_id); $i++){
+        $sql = $db->prepare('UPDATE chats SET status = 2 WHERE chat_id=?');
+        $sql->bindParam(1, $chat_id[$i]);
+        if($db){
+            $ret = $sql->execute();
+            if(!$ret) {
+                error_log(print_r($db->lastErrorMsg(), true));
+
+            }
+
+        }
+    }
+
+
+}
 
 function get_msg($recipient){
     $db = new MyDB();
@@ -71,7 +104,7 @@ function get_msg($recipient){
     if($online_status != 1){
         return 0;
     }
-    $sql_msg = $db->prepare('SELECT sender_id, chat, status, timestamps FROM chats WHERE recipient_id=?');
+    $sql_msg = $db->prepare('SELECT chat_id, sender_id, chat, status, timestamps FROM chats WHERE recipient_id=?');
     $sql_msg->bindParam(1, $recipient);
     $data = array();
     if($db){
@@ -98,17 +131,6 @@ function insert_msg($sender, $recipient, $msg, $status, $timestamps) {
     }
 
     $db = new MyDB();
-//    $sql = 'INSERT OR IGNORE INTO chats (sender_id, recipient_id, chat, status, timestamps) VALUES ("'.$sender.'", "'.$recipient.'", "'.$msg.'", "'.$status.'", "'.$timestamps.'")';
-//    error_log(print_r($sql, true));
-//    if($db){
-//        $ret = $db->exec($sql);
-//        if(!$ret) {
-//            echo $db->lastErrorMsg();
-//        } else {
-//            echo "chat added successfully\n";
-//        }
-//    }
-
     $sql = $db->prepare('INSERT OR IGNORE INTO chats (sender_id, recipient_id, chat, status, timestamps) VALUES (?, ?, ?, ?, ?)');
     $sql->bindParam(1, $sender);
     $sql->bindParam(2, $recipient);
