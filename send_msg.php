@@ -1,7 +1,10 @@
 <?php
-
+/*
+ * Without login, it will use timestamps to create a new token automatically.
+ */
 session_start();
 include "src/session.php";
+
 
 ?>
 
@@ -13,7 +16,6 @@ include "src/session.php";
     <title>Bunq Home assignment</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="src/action.js"></script>
-
 </head>
 
 <body>
@@ -28,31 +30,24 @@ include "src/session.php";
 </body>
 
 <script type="text/javascript">
-    console.log('cookie: '+ getCookie('name'));
-
+    /*
+    Once click the submit button,
+    it will post a message to the recipient
+    NaN are not allowed.
+     */
 	$('#submit').on( "click", function() {
         let msg = document.getElementById("msg").value;
         let recipient = document.getElementById("recipient").value;
-        if(!msg && !recipient){
-            alert("please input some massages");
+        if(!msg || !recipient){
+            alert("please input recipient and massages");
             return;
         }
-        console.log( msg );
 
       $.ajax({
-          url: "/api",
+          url: "/api/pop",
           type: 'POST',
           data: {recipient: recipient, msg: msg, status:0, sender: getCookie('name')},
           dataType: 'json',
-
-          success: function(res) {
-                console.log(res);
-          },
-
-          error: function(err) {
-              console.log(err.responseText);
-              console.log('err');
-          }
 
       });
     });

@@ -1,4 +1,8 @@
 <?php
+/*
+ * Slim router file to register the requests and responses
+ * Require the Slim third-party dependencies vendor
+ */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Factory\AppFactory;
@@ -9,14 +13,13 @@ include 'src/SQLite_connection.php';
 
 $app = AppFactory::create();
 
-
-$app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write('Hello World');
-    return $response;
-});
+/*
+ * Register the routers with requests and response
+ */
 
 
-$app->post('/api', function ($request, $response, $args) {
+//called by send_msg.php to insert message to server
+$app->post('/api/pop', function ($request, $response) {
     $data = (array)$request->getParsedBody();
 
     $sender = $data['sender'];
@@ -24,10 +27,7 @@ $app->post('/api', function ($request, $response, $args) {
     $msg = $data['msg'];
     $status = intval($data['status']);
     $timestamps = strval(time());
-    error_log(print_r($sender, true));
-
     insert_msg($sender, $recipient, $msg, $status, $timestamps);
-
     $payload = json_encode($data);
 
     $response->getBody()->write($payload);
@@ -37,7 +37,8 @@ $app->post('/api', function ($request, $response, $args) {
 
 });
 
-$app->post('/api/fetch', function ($request, $response, $args) {
+//called by u1_recieve_msg.php to return the message to user
+$app->post('/api/fetch', function ($request, $response) {
     $data = (array)$request->getParsedBody();
     $recipient = $data['recipient'];
     $ret = get_msg($recipient);
@@ -49,10 +50,11 @@ $app->post('/api/fetch', function ($request, $response, $args) {
         ->withStatus(201);
 });
 
-$app->post('/api/read_msg', function ($request, $response, $args) {
+//called by u1_recieve_msg.php to update the message read status
+$app->post('/api/read_msg', function ($request, $response) {
     $data = (array)$request->getParsedBody();
     $chat_id = $data['chat_id'];
-    error_log(print_r($chat_id, true));
+    //error_log(print_r($chat_id, true));
     read_msg($chat_id);
     $payload = json_encode($chat_id);
     $response->getBody()->write($payload);
@@ -61,10 +63,11 @@ $app->post('/api/read_msg', function ($request, $response, $args) {
         ->withStatus(201);
 });
 
-
+//run the slim object
 $app->run();
 
-function read_msg($chat_id){
+// update the messages read status ==> 1 not yet, 2 read already
+function read_msg($chat_id){ //chat id list
     if(!$chat_id){
         return;
     }
@@ -76,16 +79,14 @@ function read_msg($chat_id){
             $ret = $sql->execute();
             if(!$ret) {
                 error_log(print_r($db->lastErrorMsg(), true));
-
             }
 
         }
     }
-
-
 }
 
-function get_msg($recipient){
+// fetch the message to the recipient
+function get_msg($recipient){ //recipient id
     $db = new MyDB();
     $sql = $db->prepare('SELECT online_status FROM user WHERE user_id=?');
     $sql->bindParam(1, $recipient);
@@ -97,11 +98,10 @@ function get_msg($recipient){
 
         } else {
             $online_status = $ret->fetchArray(SQLITE3_ASSOC)['online_status'];
-            error_log(print_r($online_status, true));
         }
 
     }
-    if($online_status != 1){
+    if($online_status != 1){ //if user not online then quit
         return 0;
     }
     $sql_msg = $db->prepare('SELECT chat_id, sender_id, chat, status, timestamps FROM chats WHERE recipient_id=?');
@@ -116,7 +116,6 @@ function get_msg($recipient){
             while($res= $ret->fetchArray(SQLITE3_ASSOC)){
                 array_push($data, $res);
             }
-            error_log(print_r($data, true));
             $status = $data['chat'];
         }
 
@@ -125,13 +124,19 @@ function get_msg($recipient){
     return json_encode($data);
 }
 
+// insert message to the server database
 function insert_msg($sender, $recipient, $msg, $status, $timestamps) {
     if($status == 0){
         $status = 1;
     }
+    // To prevent the XSS injection
+    $recipient = xss_prevention($recipient);
+    $msg = xss_prevention($msg);
 
     $db = new MyDB();
+    // To prevent the SQL injection
     $sql = $db->prepare('INSERT OR IGNORE INTO chats (sender_id, recipient_id, chat, status, timestamps) VALUES (?, ?, ?, ?, ?)');
+
     $sql->bindParam(1, $sender);
     $sql->bindParam(2, $recipient);
     $sql->bindParam(3, $msg);
@@ -151,6 +156,8 @@ function insert_msg($sender, $recipient, $msg, $status, $timestamps) {
 
 }
 
-
+function xss_prevention($string){
+    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+}
 
 

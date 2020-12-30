@@ -3,8 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="f95e6bab-dc8f-42fc-8b10-6272e8664486" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/send_msg.php" beforeDir="false" afterPath="$PROJECT_DIR$/send_msg.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SQLite_connection.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLite_connection.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/action.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/action.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/create_tables_db.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/create_tables_db.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/session.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/session.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/u1_recieve_msg.php" beforeDir="false" afterPath="$PROJECT_DIR$/u1_recieve_msg.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user_chats_db.db" beforeDir="false" afterPath="$PROJECT_DIR$/user_chats_db.db" afterDir="false" />
     </list>
@@ -55,6 +60,7 @@
       <option name="presentableId" value="Default" />
       <updated>1609004825514</updated>
       <workItem from="1609004827854" duration="17287000" />
+      <workItem from="1609350808662" duration="1104000" />
     </task>
     <servers />
   </component>
