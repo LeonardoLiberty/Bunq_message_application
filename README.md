@@ -10,14 +10,14 @@ A very simple chat application backend in PHP.
 # ✨Overview
 
 Let's get shit done.
-This application realized that a user could be able to send a simple message to another user and a user shoule be able to get and see the author.
+This application realized that a user could be able to send a simple message to another user and a user should be able to get and see the author.
 
 ## Requirements
 
  - The users and messages should be stored in SQLite database, 
  - all communication should happen over a simple RESTful JSON API over HTTPs.
  - Users should be identified by some token.  
- - Slim microframwork required.
+ - Slim microframework required.
  - Secure and structured code.
 
 ## 📺Watch the demo from YouTube
@@ -43,31 +43,31 @@ Tech requirements:
 To install PHP locally, refer to the download page: https://www.php.net/manual/en/install.php
 
  2. Install Slim framework
- To install Slim, composer is required which is the dependency manager of PHP. Please refer to the page link: https://getcomposer.org/download/
+ To install Slim, the composer is required which is the dependency manager of PHP. Please refer to the page link: https://getcomposer.org/download/
  After installed the composer, Slim could be installed by: 
  
 	```
 	composer require slim/slim:"4.*"
 	```
-	 Before runing the slim, PSR-7 Implementation and ServerRequest Creator are required to be installed.
+	 Before running the slim, PSR-7 Implementation and ServerRequest Creator are required to be installed.
 	 
 
 	```
 	composer require slim/psr7
 	```
-3. Ensure dictionary containing SQLite3 .db file (src/db) is writable by adjust the roots.
+3. Ensure dictionary containing SQLite3 .db file (src/db) is writable by adjusting the roots.
 4. Web server is based on PHP built-in server. Please make sure `index.php` as your entry point otherwise change appropriately.
 
 
 ## Running the program
 
  - Navigate to project root and run  ```php -S localhost:8888```
- - Now, php server is listerning to the link: http://localhost:8888
- - Please use one browser to send message via (Ignore the warnning if exists or refresh the page at first): http://localhost:8888/send_msg.php
- - Make sure send message to user called "u1".
- - Open another browser to recieve message as user "u1" via: http://localhost:8888/u1_recieve_msg.php
+ - Now, php server is listening to the link: http://localhost:8888
+ - Please use one browser to send messages via (Ignore the warning if exists or refresh the page at first): http://localhost:8888/send_msg.php
+ - Make sure send message to a user called "u1".
+ - Open another browser to receive message as user "u1" via http://localhost:8888/u1_recieve_msg.php
 
-Here we use two browser to keep two different sessions as different token of users.
+Here we use two browsers to keep two different sessions as the different token of users.
 
 # 🔨Structure
 
@@ -85,7 +85,7 @@ This section contains file structures and their usages, database design which ca
  - /vendor ==> Slim third-party dependencies
  - index.php ==> Slim router file to register the requests and responses
  - send_msg.php ==> User can send message to another user
- - u1_recieve_msg.php ==> One user recieve message from the other users
+ - u1_recieve_msg.php ==> One user receives messages from the other users
  - user_chat_db.db ==> database file contains two tables and their structure
 
 ## Dataset Design
@@ -108,13 +108,13 @@ Based on the requirements, two tables user and chats are created as follow:
 |sender_id | user identification of sender
 |recipient_id    | user identification of recipient
 |chat| message content
-|status| 0 sent; 1 recieved by server; 2 recieved by recipient
+|status| 0 sent; 1 received by server; 2 received by recipient
 |timestamps| sent time by sender
 
 
 # 🏷️Security
 
-In order to keep the program secure, two injections are raised to be handled includes SQL injection and XSS injection. 
+In order to keep the secure program, two injections are raised to be handled includes SQL injection and XSS injection. 
 
 ## SQL injection
 

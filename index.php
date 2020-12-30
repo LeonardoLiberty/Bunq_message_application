@@ -27,6 +27,7 @@ $app->post('/api/pop', function ($request, $response) {
     $msg = $data['msg'];
     $status = intval($data['status']);
     $timestamps = strval(time());
+    // Call insert message function
     insert_msg($sender, $recipient, $msg, $status, $timestamps);
     $payload = json_encode($data);
 
@@ -41,6 +42,7 @@ $app->post('/api/pop', function ($request, $response) {
 $app->post('/api/fetch', function ($request, $response) {
     $data = (array)$request->getParsedBody();
     $recipient = $data['recipient'];
+    //Call get message function
     $ret = get_msg($recipient);
     $payload = json_encode($ret);
 
@@ -55,6 +57,7 @@ $app->post('/api/read_msg', function ($request, $response) {
     $data = (array)$request->getParsedBody();
     $chat_id = $data['chat_id'];
     //error_log(print_r($chat_id, true));
+    //Call read message function
     read_msg($chat_id);
     $payload = json_encode($chat_id);
     $response->getBody()->write($payload);
